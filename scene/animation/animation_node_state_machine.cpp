@@ -70,6 +70,16 @@ StringName AnimationNodeStateMachineTransition::get_advance_condition_name() con
 	return advance_condition_name;
 }
 
+void AnimationNodeStateMachineTransition::set_inverted_advance_condition(bool p_invert)
+{
+	inverted_advance_condition = p_invert;
+}
+
+bool AnimationNodeStateMachineTransition::is_inverted_advance_condition() const
+{
+	return inverted_advance_condition;
+}
+
 void AnimationNodeStateMachineTransition::set_xfade_time(float p_xfade) {
 
 	ERR_FAIL_COND(p_xfade < 0);
@@ -109,6 +119,9 @@ void AnimationNodeStateMachineTransition::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_advance_condition", "name"), &AnimationNodeStateMachineTransition::set_advance_condition);
 	ClassDB::bind_method(D_METHOD("get_advance_condition"), &AnimationNodeStateMachineTransition::get_advance_condition);
 
+	ClassDB::bind_method(D_METHOD("set_inverted_advance_condition", "invert"), &AnimationNodeStateMachineTransition::set_inverted_advance_condition);
+	ClassDB::bind_method(D_METHOD("is_inverted_advance_condition"), &AnimationNodeStateMachineTransition::is_inverted_advance_condition);
+
 	ClassDB::bind_method(D_METHOD("set_xfade_time", "secs"), &AnimationNodeStateMachineTransition::set_xfade_time);
 	ClassDB::bind_method(D_METHOD("get_xfade_time"), &AnimationNodeStateMachineTransition::get_xfade_time);
 
@@ -121,6 +134,7 @@ void AnimationNodeStateMachineTransition::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "switch_mode", PROPERTY_HINT_ENUM, "Immediate,Sync,AtEnd"), "set_switch_mode", "get_switch_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_advance"), "set_auto_advance", "has_auto_advance");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "advance_condition"), "set_advance_condition", "get_advance_condition");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "inverted_advance_condition"), "set_inverted_advance_condition", "is_inverted_advance_condition");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "xfade_time", PROPERTY_HINT_RANGE, "0,240,0.01"), "set_xfade_time", "get_xfade_time");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "priority", PROPERTY_HINT_RANGE, "0,32,1"), "set_priority", "get_priority");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "disabled"), "set_disabled", "is_disabled");
