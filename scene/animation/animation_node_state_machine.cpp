@@ -438,8 +438,10 @@ float AnimationNodeStateMachinePlayback::process(AnimationNodeStateMachine *p_st
 			if (p_state_machine->transitions[i].transition->has_auto_advance()) {
 				auto_advance = true;
 			}
-			StringName advance_condition_name = p_state_machine->transitions[i].transition->get_advance_condition_name();
-			if (advance_condition_name != StringName() && bool(p_state_machine->get_parameter(advance_condition_name))) {
+
+			const Ref<AnimationNodeStateMachineTransition> active_transition = p_state_machine->transitions[i].transition;
+			StringName advance_condition_name = active_transition->get_advance_condition_name();
+			if (advance_condition_name != StringName() && (bool(p_state_machine->get_parameter(advance_condition_name)) != active_transition->is_inverted_advance_condition())) {
 				auto_advance = true;
 			}
 
