@@ -295,6 +295,7 @@ public:
 	virtual void input_event(const Ref<InputEvent> &p_event);
 	virtual void init();
 
+	virtual void pre_iteration(real_t p_time) override;
 	virtual bool iteration(float p_time);
 	virtual bool idle(float p_time);
 
@@ -406,6 +407,8 @@ public:
 	int get_network_unique_id() const;
 	Vector<int> get_network_connected_peers() const;
 	int get_rpc_sender_id() const;
+
+	void simulate_iteration(real_t p_delta);
 
 	void set_refuse_new_network_connections(bool p_refuse);
 	bool is_refusing_new_network_connections() const;

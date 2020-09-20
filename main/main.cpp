@@ -2042,14 +2042,14 @@ bool Main::iteration() {
 
 	uint64_t ticks_elapsed = ticks - last_ticks;
 
-	int physics_fps = Engine::get_singleton()->get_iterations_per_second();
-	float frame_slice = 1.0 / physics_fps;
+	const int physics_fps = Engine::get_singleton()->get_iterations_per_second();
+	const float frame_slice = 1.0 / physics_fps;
 
-	float time_scale = Engine::get_singleton()->get_time_scale();
+	const float time_scale = Engine::get_singleton()->get_time_scale();
 
 	MainFrameTime advance = main_timer_sync.advance(frame_slice, physics_fps);
 	double step = advance.idle_step;
-	double scaled_step = step * time_scale;
+	const double scaled_step = step * time_scale;
 
 	Engine::get_singleton()->_frame_step = step;
 	Engine::get_singleton()->_physics_interpolation_fraction = advance.interpolation_fraction;
@@ -2068,6 +2068,10 @@ bool Main::iteration() {
 	}
 
 	bool exit = false;
+
+	const real_t fixed_delta = frame_slice * time_scale;
+
+	OS::get_singleton()->get_main_loop()->pre_iteration(fixed_delta);
 
 	Engine::get_singleton()->_in_physics = true;
 

@@ -464,6 +464,11 @@ void SceneTree::init() {
 	MainLoop::init();
 }
 
+void SceneTree::pre_iteration(real_t p_time)
+{
+	emit_signal("pre_iteration", p_time);
+}
+
 bool SceneTree::iteration(float p_time) {
 
 	root_lock++;
@@ -1814,6 +1819,14 @@ int SceneTree::get_rpc_sender_id() const {
 	return multiplayer->get_rpc_sender_id();
 }
 
+void SceneTree::simulate_iteration(real_t p_delta) {
+	iteration(p_delta);
+
+	current_frame--;
+
+	idle(p_delta);
+}
+
 void SceneTree::set_refuse_new_network_connections(bool p_refuse) {
 	multiplayer->set_refuse_new_network_connections(p_refuse);
 }
@@ -1905,6 +1918,8 @@ void SceneTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_connection_failed"), &SceneTree::_connection_failed);
 	ClassDB::bind_method(D_METHOD("_server_disconnected"), &SceneTree::_server_disconnected);
 
+	ClassDB::bind_method(D_METHOD("simulate_iteration"), &SceneTree::simulate_iteration);
+
 	ClassDB::bind_method(D_METHOD("set_use_font_oversampling", "enable"), &SceneTree::set_use_font_oversampling);
 	ClassDB::bind_method(D_METHOD("is_using_font_oversampling"), &SceneTree::is_using_font_oversampling);
 
@@ -1925,6 +1940,7 @@ void SceneTree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("node_added", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 	ADD_SIGNAL(MethodInfo("node_removed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 	ADD_SIGNAL(MethodInfo("node_renamed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
+	ADD_SIGNAL(MethodInfo("pre_iteration", PropertyInfo(Variant::REAL, "p_delta")));
 	ADD_SIGNAL(MethodInfo("screen_resized"));
 	ADD_SIGNAL(MethodInfo("node_configuration_warning_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 
