@@ -466,8 +466,10 @@ void SceneTree::init() {
 
 void SceneTree::pre_iteration(real_t p_time)
 {
+	pre_iteration_active = true;
 	phys_delta = p_time;
 	emit_signal("pre_iteration", p_time);
+	pre_iteration_active = false;
 }
 
 bool SceneTree::iteration(float p_time) {
@@ -517,8 +519,11 @@ bool SceneTree::idle(float p_time) {
 
 	idle_process_time = p_time;
 
-	if (multiplayer_poll) {
-		multiplayer->poll();
+	if (!pre_iteration_active)
+	{
+		if (multiplayer_poll) {
+			multiplayer->poll();
+		}
 	}
 
 	emit_signal("idle_frame");
@@ -530,13 +535,16 @@ bool SceneTree::idle(float p_time) {
 	_notify_group_pause("idle_process_internal", Node::NOTIFICATION_INTERNAL_PROCESS);
 	_notify_group_pause("idle_process", Node::NOTIFICATION_PROCESS);
 
-	Size2 win_size = Size2(OS::get_singleton()->get_window_size().width, OS::get_singleton()->get_window_size().height);
+	if (!pre_iteration_active)
+	{
+		Size2 win_size = Size2(OS::get_singleton()->get_window_size().width, OS::get_singleton()->get_window_size().height);
 
-	if (win_size != last_screen_size) {
+		if (win_size != last_screen_size) {
 
-		last_screen_size = win_size;
-		_update_root_rect();
-		emit_signal("screen_resized");
+			last_screen_size = win_size;
+			_update_root_rect();
+			emit_signal("screen_resized");
+		}
 	}
 
 	_flush_ugc();
@@ -2094,6 +2102,9 @@ SceneTree::SceneTree() {
 	call_lock = 0;
 	root_lock = 0;
 	node_count = 0;
+
+	phys_delta = 0.f;
+	pre_iteration_active = false;
 
 	//create with mainloop
 

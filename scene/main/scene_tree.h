@@ -152,6 +152,7 @@ private:
 	real_t stretch_shrink;
 
 	real_t phys_delta;
+	bool pre_iteration_active;
 
 	void _update_font_oversampling(float p_ratio);
 	void _update_root_rect();
