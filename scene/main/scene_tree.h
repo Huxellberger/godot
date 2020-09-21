@@ -408,7 +408,7 @@ public:
 	Vector<int> get_network_connected_peers() const;
 	int get_rpc_sender_id() const;
 
-	void simulate_iteration(real_t p_delta);
+	void simulate_iteration(real_t p_delta, int phys_ticks);
 
 	void set_refuse_new_network_connections(bool p_refuse);
 	bool is_refusing_new_network_connections() const;

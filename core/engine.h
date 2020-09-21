@@ -50,6 +50,7 @@ public:
 
 private:
 	friend class Main;
+	friend class SceneTree;
 
 	uint64_t frames_drawn;
 	uint32_t _frame_delay;

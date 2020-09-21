@@ -1819,10 +1819,30 @@ int SceneTree::get_rpc_sender_id() const {
 	return multiplayer->get_rpc_sender_id();
 }
 
-void SceneTree::simulate_iteration(real_t p_delta) {
-	iteration(p_delta);
+void SceneTree::simulate_iteration(real_t p_delta, int phys_ticks) {
 
-	current_frame--;
+	Engine::get_singleton()->_in_physics = true;
+
+	real_t phys_delta = 1 / Engine::get_target_fps();
+
+	for (int i = 0; i < phys_ticks; i++)
+	{
+		PhysicsServer::get_singleton()->sync();
+		PhysicsServer::get_singleton()->flush_queries();
+
+		Physics2DServer::get_singleton()->sync();
+		Physics2DServer::get_singleton()->flush_queries();
+
+		iteration(p_delta);
+		current_frame--;
+
+		PhysicsServer::get_singleton()->step(phys_delta);
+
+		Physics2DServer::get_singleton()->end_sync();
+		Physics2DServer::get_singleton()->step(phys_delta);
+	}
+
+	Engine::get_singleton()->_in_physics = false;
 
 	idle(p_delta);
 }
@@ -1918,7 +1938,7 @@ void SceneTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_connection_failed"), &SceneTree::_connection_failed);
 	ClassDB::bind_method(D_METHOD("_server_disconnected"), &SceneTree::_server_disconnected);
 
-	ClassDB::bind_method(D_METHOD("simulate_iteration"), &SceneTree::simulate_iteration);
+	ClassDB::bind_method(D_METHOD("simulate_iteration", "iteration_delta", "phys_ticks"), &SceneTree::simulate_iteration);
 
 	ClassDB::bind_method(D_METHOD("set_use_font_oversampling", "enable"), &SceneTree::set_use_font_oversampling);
 	ClassDB::bind_method(D_METHOD("is_using_font_oversampling"), &SceneTree::is_using_font_oversampling);

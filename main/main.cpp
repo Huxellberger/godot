@@ -2073,6 +2073,8 @@ bool Main::iteration() {
 
 	OS::get_singleton()->get_main_loop()->pre_iteration(fixed_delta);
 
+	message_queue->flush();
+
 	Engine::get_singleton()->_in_physics = true;
 
 	for (int iters = 0; iters < advance.physics_steps; ++iters) {
