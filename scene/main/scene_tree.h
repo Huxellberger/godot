@@ -151,6 +151,8 @@ private:
 	Size2i stretch_min;
 	real_t stretch_shrink;
 
+	real_t phys_delta;
+
 	void _update_font_oversampling(float p_ratio);
 	void _update_root_rect();
 

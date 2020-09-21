@@ -466,6 +466,7 @@ void SceneTree::init() {
 
 void SceneTree::pre_iteration(real_t p_time)
 {
+	phys_delta = p_time;
 	emit_signal("pre_iteration", p_time);
 }
 
@@ -1823,8 +1824,6 @@ void SceneTree::simulate_iteration(real_t p_delta, int phys_ticks) {
 
 	Engine::get_singleton()->_in_physics = true;
 
-	real_t phys_delta = 1 / Engine::get_target_fps();
-
 	for (int i = 0; i < phys_ticks; i++)
 	{
 		PhysicsServer::get_singleton()->sync();
@@ -1836,15 +1835,21 @@ void SceneTree::simulate_iteration(real_t p_delta, int phys_ticks) {
 		iteration(p_delta);
 		current_frame--;
 
+		MessageQueue::get_singleton()->flush();
+
 		PhysicsServer::get_singleton()->step(phys_delta);
 
 		Physics2DServer::get_singleton()->end_sync();
 		Physics2DServer::get_singleton()->step(phys_delta);
+
+		MessageQueue::get_singleton()->flush();
 	}
 
 	Engine::get_singleton()->_in_physics = false;
 
 	idle(p_delta);
+
+	MessageQueue::get_singleton()->flush();
 }
 
 void SceneTree::set_refuse_new_network_connections(bool p_refuse) {
