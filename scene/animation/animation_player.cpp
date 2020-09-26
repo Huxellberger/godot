@@ -210,12 +210,18 @@ void AnimationPlayer::_notification(int p_what) {
 			if (animation_process_mode == ANIMATION_PROCESS_PHYSICS)
 				break;
 
+			if (animation_process_mode == ANIMATION_PROCESS_BLOCKED)
+				break;
+
 			if (processing)
 				_animation_process(get_process_delta_time());
 		} break;
 		case NOTIFICATION_INTERNAL_PHYSICS_PROCESS: {
 
 			if (animation_process_mode == ANIMATION_PROCESS_IDLE)
+				break;
+
+			if (animation_process_mode == ANIMATION_PROCESS_BLOCKED)
 				break;
 
 			if (processing)
@@ -1495,6 +1501,7 @@ void AnimationPlayer::_set_process(bool p_process, bool p_force) {
 		case ANIMATION_PROCESS_PHYSICS: set_physics_process_internal(p_process && active); break;
 		case ANIMATION_PROCESS_IDLE: set_process_internal(p_process && active); break;
 		case ANIMATION_PROCESS_MANUAL: break;
+		case ANIMATION_PROCESS_BLOCKED: set_physics_process_internal(false); set_process_internal(false); break;
 	}
 
 	processing = p_process;
@@ -1703,6 +1710,7 @@ void AnimationPlayer::_bind_methods() {
 	BIND_ENUM_CONSTANT(ANIMATION_PROCESS_PHYSICS);
 	BIND_ENUM_CONSTANT(ANIMATION_PROCESS_IDLE);
 	BIND_ENUM_CONSTANT(ANIMATION_PROCESS_MANUAL);
+	BIND_ENUM_CONSTANT(ANIMATION_PROCESS_BLOCKED);
 
 	BIND_ENUM_CONSTANT(ANIMATION_METHOD_CALL_DEFERRED);
 	BIND_ENUM_CONSTANT(ANIMATION_METHOD_CALL_IMMEDIATE);

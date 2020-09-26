@@ -470,6 +470,7 @@ void SceneTree::pre_iteration(real_t p_time)
 	phys_delta = p_time;
 	emit_signal("pre_iteration", p_time);
 	pre_iteration_active = false;
+	emit_signal("pre_iteration_complete");
 }
 
 bool SceneTree::iteration(float p_time) {
@@ -1974,6 +1975,7 @@ void SceneTree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("node_removed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 	ADD_SIGNAL(MethodInfo("node_renamed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 	ADD_SIGNAL(MethodInfo("pre_iteration", PropertyInfo(Variant::REAL, "p_delta")));
+	ADD_SIGNAL(MethodInfo("pre_iteration_complete"));
 	ADD_SIGNAL(MethodInfo("screen_resized"));
 	ADD_SIGNAL(MethodInfo("node_configuration_warning_changed", PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "Node")));
 
